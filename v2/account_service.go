@@ -23,7 +23,7 @@ func (s *GetAccountService) OmitZeroBalances(v bool) *GetAccountService {
 func (s *GetAccountService) Do(ctx context.Context, opts ...RequestOption) (res *Account, err error) {
 	r := &request{
 		method:   http.MethodGet,
-		endpoint: "/api/v3/account",
+		endpoint: "/api/v1/account",
 		secType:  secTypeSigned,
 	}
 	if s.omitZeroBalances != nil {
@@ -34,6 +34,7 @@ func (s *GetAccountService) Do(ctx context.Context, opts ...RequestOption) (res 
 	if err != nil {
 		return nil, err
 	}
+	//fmt.Println(string(data))
 	res = new(Account)
 	err = json.Unmarshal(data, res)
 	if err != nil {
@@ -42,21 +43,34 @@ func (s *GetAccountService) Do(ctx context.Context, opts ...RequestOption) (res 
 	return res, nil
 }
 
-// Account define account info
+//// Account define account info
+//type Account struct {
+//	MakerCommission  int64           `json:"makerCommission"`
+//	TakerCommission  int64           `json:"takerCommission"`
+//	BuyerCommission  int64           `json:"buyerCommission"`
+//	SellerCommission int64           `json:"sellerCommission"`
+//	CommissionRates  CommissionRates `json:"commissionRates"`
+//	CanTrade         bool            `json:"canTrade"`
+//	CanWithdraw      bool            `json:"canWithdraw"`
+//	CanDeposit       bool            `json:"canDeposit"`
+//	UpdateTime       uint64          `json:"updateTime"`
+//	AccountType      string          `json:"accountType"`
+//	Balances         []Balance       `json:"balances"`
+//	Permissions      []string        `json:"permissions"`
+//	UID              int64           `json:"uid"`
+//}
+
+// // {"makerCommission":1E+1,"takerCommission":1E+1,"buyerCommission":8.0,"sellerCommission":8.0,"canTrade":true,"canWithdraw":true,"canDeposit":true,"updateTime":1732799161000, "balances":[{"asset":"USDT","free":"958.98200000","locked":"0.00000000"},{"asset":"THB","free":"22.87053640","locked":"0.00000000"}]}
 type Account struct {
-	MakerCommission  int64           `json:"makerCommission"`
-	TakerCommission  int64           `json:"takerCommission"`
-	BuyerCommission  int64           `json:"buyerCommission"`
-	SellerCommission int64           `json:"sellerCommission"`
-	CommissionRates  CommissionRates `json:"commissionRates"`
-	CanTrade         bool            `json:"canTrade"`
-	CanWithdraw      bool            `json:"canWithdraw"`
-	CanDeposit       bool            `json:"canDeposit"`
-	UpdateTime       uint64          `json:"updateTime"`
-	AccountType      string          `json:"accountType"`
-	Balances         []Balance       `json:"balances"`
-	Permissions      []string        `json:"permissions"`
-	UID              int64           `json:"uid"`
+	MakerCommission  json.Number `json:"makerCommission"`
+	TakerCommission  json.Number `json:"takerCommission"`
+	BuyerCommission  json.Number `json:"buyerCommission"`
+	SellerCommission json.Number `json:"sellerCommission"`
+	CanTrade         bool        `json:"canTrade"`
+	CanWithdraw      bool        `json:"canWithdraw"`
+	CanDeposit       bool        `json:"canDeposit"`
+	UpdateTime       int64       `json:"updateTime"`
+	Balances         []Balance   `json:"balances"`
 }
 
 // Balance define user balance of your account

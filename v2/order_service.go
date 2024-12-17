@@ -157,7 +157,7 @@ func (s *CreateOrderService) createOrder(ctx context.Context, endpoint string, o
 
 // Do send request
 func (s *CreateOrderService) Do(ctx context.Context, opts ...RequestOption) (res *CreateOrderResponse, err error) {
-	data, err := s.createOrder(ctx, "/api/v3/order", opts...)
+	data, err := s.createOrder(ctx, "/api/v1/order", opts...)
 	if err != nil {
 		return nil, err
 	}
