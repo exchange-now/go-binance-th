@@ -13,6 +13,7 @@ type StartUserStreamService struct {
 }
 
 // Do send request
+// https://www.binance.th/api-docs/en/?go#create-a-listenkey-user_stream
 func (s *StartUserStreamService) Do(ctx context.Context, opts ...RequestOption) (siteListenKey, globalListenKey string, err error) {
 	r := &request{
 		method:   http.MethodPost,

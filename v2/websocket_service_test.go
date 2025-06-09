@@ -822,7 +822,7 @@ func (s *websocketServiceTestSuite) testWsUserDataServe(data []byte, expectedEve
 	s.mockWsServe(data, errors.New(fakeErrMsg))
 	defer s.assertWsServe()
 
-	doneC, stopC, err := WsUserDataServe("fakeListenKey", func(event *WsUserDataEvent) {
+	doneC, stopC, err := WsUserDataServe(SymbolTypeGlobal, "fakeListenKey", func(event *WsUserDataEvent) {
 		s.assertUserDataEvent(expectedEvent, event)
 	}, func(err error) {
 		s.r().EqualError(err, fakeErrMsg)
