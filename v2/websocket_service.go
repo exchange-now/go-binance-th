@@ -9,10 +9,21 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+type BinancethSymbolType string
+
+const (
+	SymbolTypeGlobal BinancethSymbolType = "GLOBAL"
+	SymbolTypeSite   BinancethSymbolType = "SITE"
+)
+
 var (
 	// Endpoints
-	BaseWsMainURL          = "wss://stream.binance.com:9443/ws"
-	BaseWsTestnetURL       = "wss://stream.testnet.binance.vision/ws"
+	BaseWsMainURL    = "wss://stream.binance.com:9443/ws"
+	BaseWsTestnetURL = "wss://stream.testnet.binance.vision/ws"
+
+	SymbolTypeGlobalWsMainURL = "wss://www.binance.th/stream"
+	SymbolTypeSiteWsMainURL   = "wss://stream-th.2meta.app/stream"
+
 	BaseCombinedMainURL    = "wss://stream.binance.com:9443/stream?streams="
 	BaseCombinedTestnetURL = "wss://stream.testnet.binance.vision/stream?streams="
 	BaseWsApiMainURL       = "wss://ws-api.binance.com:443/ws-api/v3"
@@ -601,8 +612,16 @@ type WsOCOOrder struct {
 type WsUserDataHandler func(event *WsUserDataEvent)
 
 // WsUserDataServe serve user data handler with listen key
-func WsUserDataServe(listenKey string, handler WsUserDataHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
-	endpoint := fmt.Sprintf("%s/%s", getWsEndpoint(), listenKey)
+// https://www.binance.th/api-docs/en/?go#cloud-rest-open-api-user-data-streams
+func WsUserDataServe(symbolType BinancethSymbolType, listenKey string, handler WsUserDataHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
+	var endpoint string
+	if symbolType == SymbolTypeSite {
+		endpoint = fmt.Sprintf("%s?streams=%s", SymbolTypeSiteWsMainURL, listenKey)
+	} else if symbolType == SymbolTypeGlobal {
+		endpoint = fmt.Sprintf("%s?streams=%s", SymbolTypeGlobalWsMainURL, listenKey)
+	} else {
+		return nil, nil, fmt.Errorf("unknown symbol type: %s", symbolType)
+	}
 	cfg := newWsConfig(endpoint)
 	wsHandler := func(message []byte) {
 		j, err := newJSON(message)
