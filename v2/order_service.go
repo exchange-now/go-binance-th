@@ -3,6 +3,7 @@ package binance
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/adshao/go-binance/v2/common"
@@ -663,7 +664,7 @@ func (s *CancelOrderService) NewClientOrderID(newClientOrderID string) *CancelOr
 func (s *CancelOrderService) Do(ctx context.Context, opts ...RequestOption) (res *CancelOrderResponse, err error) {
 	r := &request{
 		method:   http.MethodDelete,
-		endpoint: "/api/v3/order",
+		endpoint: "/api/v1/order",
 		secType:  secTypeSigned,
 	}
 	r.setFormParam("symbol", s.symbol)
@@ -766,7 +767,7 @@ func (s *CancelOpenOrdersService) Symbol(symbol string) *CancelOpenOrdersService
 func (s *CancelOpenOrdersService) Do(ctx context.Context, opts ...RequestOption) (res *CancelOpenOrdersResponse, err error) {
 	r := &request{
 		method:   http.MethodDelete,
-		endpoint: "/api/v3/openOrders",
+		endpoint: "/api/v1/openOrders",
 		secType:  secTypeSigned,
 	}
 	r.setParam("symbol", s.symbol)
@@ -774,29 +775,31 @@ func (s *CancelOpenOrdersService) Do(ctx context.Context, opts ...RequestOption)
 	if err != nil {
 		return &CancelOpenOrdersResponse{}, err
 	}
-	rawMessages := make([]*json.RawMessage, 0)
-	err = json.Unmarshal(data, &rawMessages)
-	if err != nil {
-		return &CancelOpenOrdersResponse{}, err
-	}
-	cancelOpenOrdersResponse := new(CancelOpenOrdersResponse)
-	for _, j := range rawMessages {
-		o := new(CancelOrderResponse)
-		if err := json.Unmarshal(*j, o); err != nil {
-			return &CancelOpenOrdersResponse{}, err
-		}
-		// Non-OCO orders guaranteed to have order list ID of -1
-		if o.OrderListID == -1 {
-			cancelOpenOrdersResponse.Orders = append(cancelOpenOrdersResponse.Orders, o)
-			continue
-		}
-		oco := new(CancelOCOResponse)
-		if err := json.Unmarshal(*j, oco); err != nil {
-			return &CancelOpenOrdersResponse{}, err
-		}
-		cancelOpenOrdersResponse.OCOOrders = append(cancelOpenOrdersResponse.OCOOrders, oco)
-	}
-	return cancelOpenOrdersResponse, nil
+	fmt.Println("CancelOpenOrdersService response:", string(data))
+	//rawMessages := make([]*json.RawMessage, 0)
+	//err = json.Unmarshal(data, &rawMessages)
+	//if err != nil {
+	//	return &CancelOpenOrdersResponse{}, err
+	//}
+	//cancelOpenOrdersResponse := new(CancelOpenOrdersResponse)
+	//for _, j := range rawMessages {
+	//	o := new(CancelOrderResponse)
+	//	if err := json.Unmarshal(*j, o); err != nil {
+	//		return &CancelOpenOrdersResponse{}, err
+	//	}
+	//	// Non-OCO orders guaranteed to have order list ID of -1
+	//	if o.OrderListID == -1 {
+	//		cancelOpenOrdersResponse.Orders = append(cancelOpenOrdersResponse.Orders, o)
+	//		continue
+	//	}
+	//	oco := new(CancelOCOResponse)
+	//	if err := json.Unmarshal(*j, oco); err != nil {
+	//		return &CancelOpenOrdersResponse{}, err
+	//	}
+	//	cancelOpenOrdersResponse.OCOOrders = append(cancelOpenOrdersResponse.OCOOrders, oco)
+	//}
+	//return cancelOpenOrdersResponse, nil
+	return &CancelOpenOrdersResponse{}, nil
 }
 
 // CancelOpenOrdersResponse defines cancel open orders response.
@@ -807,22 +810,25 @@ type CancelOpenOrdersResponse struct {
 
 // CancelOrderResponse may be returned included in a CancelOpenOrdersResponse.
 type CancelOrderResponse struct {
-	Symbol                   string                  `json:"symbol"`
-	OrigClientOrderID        string                  `json:"origClientOrderId"`
-	OrderID                  int64                   `json:"orderId"`
-	OrderListID              int64                   `json:"orderListId"`
-	ClientOrderID            string                  `json:"clientOrderId"`
-	TransactTime             int64                   `json:"transactTime"`
-	Price                    string                  `json:"price"`
-	OrigQuantity             string                  `json:"origQty"`
-	OrigQuoteOrderQuantity   string                  `json:"origQuoteOrderQty"`
-	ExecutedQuantity         string                  `json:"executedQty"`
-	CummulativeQuoteQuantity string                  `json:"cummulativeQuoteQty"`
-	Status                   OrderStatusType         `json:"status"`
-	TimeInForce              TimeInForceType         `json:"timeInForce"`
-	Type                     OrderType               `json:"type"`
-	Side                     SideType                `json:"side"`
-	SelfTradePreventionMode  SelfTradePreventionMode `json:"selfTradePreventionMode"`
+	Symbol            string `json:"symbol"`
+	OrigClientOrderID string `json:"origClientOrderId"`
+	OrderID           int64  `json:"orderId"`
+	//OrderListID              int64                   `json:"orderListId"`
+	//ClientOrderID            string                  `json:"clientOrderId"`
+	//TransactTime             int64                   `json:"transactTime"`
+	Price string `json:"price"`
+	//OrigQuantity             string                  `json:"origQty"`
+	OrigQty string `json:"origQty"`
+	//OrigQuoteOrderQuantity   string                  `json:"origQuoteOrderQty"`
+	//ExecutedQuantity         string                  `json:"executedQty"`
+	ExecutedQty string `json:"executedQty"`
+	//CummulativeQuoteQuantity string                  `json:"cummulativeQuoteQty"`
+	CumulativeQuoteQty string          `json:"cumulativeQuoteQty"`
+	Status             OrderStatusType `json:"status"`
+	TimeInForce        TimeInForceType `json:"timeInForce"`
+	Type               OrderType       `json:"type"`
+	Side               SideType        `json:"side"`
+	//SelfTradePreventionMode  SelfTradePreventionMode `json:"selfTradePreventionMode"`
 }
 
 // CancelOCOResponse may be returned included in a CancelOpenOrdersResponse.
