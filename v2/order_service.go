@@ -506,7 +506,7 @@ func (s *GetOrderService) OrigClientOrderID(origClientOrderID string) *GetOrderS
 func (s *GetOrderService) Do(ctx context.Context, opts ...RequestOption) (res *Order, err error) {
 	r := &request{
 		method:   http.MethodGet,
-		endpoint: "/api/v3/order",
+		endpoint: "/api/v1/order",
 		secType:  secTypeSigned,
 	}
 	r.setParam("symbol", s.symbol)
@@ -530,25 +530,28 @@ func (s *GetOrderService) Do(ctx context.Context, opts ...RequestOption) (res *O
 
 // Order define order info
 type Order struct {
-	Symbol                   string          `json:"symbol"`
-	OrderID                  int64           `json:"orderId"`
-	OrderListId              int64           `json:"orderListId"`
-	ClientOrderID            string          `json:"clientOrderId"`
-	Price                    string          `json:"price"`
-	OrigQuantity             string          `json:"origQty"`
-	ExecutedQuantity         string          `json:"executedQty"`
-	CummulativeQuoteQuantity string          `json:"cummulativeQuoteQty"`
-	Status                   OrderStatusType `json:"status"`
-	TimeInForce              TimeInForceType `json:"timeInForce"`
-	Type                     OrderType       `json:"type"`
-	Side                     SideType        `json:"side"`
-	StopPrice                string          `json:"stopPrice"`
-	IcebergQuantity          string          `json:"icebergQty"`
-	Time                     int64           `json:"time"`
-	UpdateTime               int64           `json:"updateTime"`
-	IsWorking                bool            `json:"isWorking"`
-	IsIsolated               bool            `json:"isIsolated"`
-	OrigQuoteOrderQuantity   string          `json:"origQuoteOrderQty"`
+	Symbol  string `json:"symbol"`
+	OrderID int64  `json:"orderId"`
+	//OrderListId              int64           `json:"orderListId"`
+	ClientOrderID string `json:"clientOrderId"`
+	Price         string `json:"price"`
+	OrigQuantity  string `json:"origQty"`
+	//ExecutedQuantity         string          `json:"executedQty"`
+	//CummulativeQuoteQuantity string          `json:"cummulativeQuoteQty"`
+	ExecutedQty        string          `json:"executedQty"`
+	CumulativeQuoteQty string          `json:"cumulativeQuoteQty"`
+	Status             OrderStatusType `json:"status"`
+	TimeInForce        TimeInForceType `json:"timeInForce"`
+	Type               OrderType       `json:"type"`
+	Side               SideType        `json:"side"`
+	StopPrice          string          `json:"stopPrice"`
+	//IcebergQuantity        string          `json:"icebergQty"`
+	Time       int64 `json:"time"`
+	UpdateTime int64 `json:"updateTime"`
+	IsWorking  bool  `json:"isWorking"`
+	//IsIsolated             bool            `json:"isIsolated"`
+	//OrigQuoteOrderQuantity string          `json:"origQuoteOrderQty"`
+	OrigQuoteOrderQty string `json:"origQuoteOrderQty"`
 }
 
 // ListOrdersService all account orders; active, canceled, or filled
