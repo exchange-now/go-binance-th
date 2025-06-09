@@ -459,7 +459,7 @@ func (s *ListOpenOrdersService) Symbol(symbol string) *ListOpenOrdersService {
 func (s *ListOpenOrdersService) Do(ctx context.Context, opts ...RequestOption) (res []*Order, err error) {
 	r := &request{
 		method:   http.MethodGet,
-		endpoint: "/api/v3/openOrders",
+		endpoint: "/api/v1/openOrders",
 		secType:  secTypeSigned,
 	}
 	if s.symbol != "" {
