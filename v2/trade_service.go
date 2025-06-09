@@ -54,10 +54,10 @@ func (s *ListTradesService) OrderId(OrderId int64) *ListTradesService {
 }
 
 // Do send request
-func (s *ListTradesService) Do(ctx context.Context, opts ...RequestOption) (res []*TradeV3, err error) {
+func (s *ListTradesService) Do(ctx context.Context, opts ...RequestOption) (res []*TradeThailand, err error) {
 	r := &request{
 		method:   http.MethodGet,
-		endpoint: "/api/v3/myTrades",
+		endpoint: "/api/v1/userTrades",
 		secType:  secTypeSigned,
 	}
 	r.setParam("symbol", s.symbol)
@@ -78,12 +78,12 @@ func (s *ListTradesService) Do(ctx context.Context, opts ...RequestOption) (res 
 	}
 	data, err := s.c.callAPI(ctx, r, opts...)
 	if err != nil {
-		return []*TradeV3{}, err
+		return []*TradeThailand{}, err
 	}
-	res = make([]*TradeV3, 0)
+	res = make([]*TradeThailand, 0)
 	err = json.Unmarshal(data, &res)
 	if err != nil {
-		return []*TradeV3{}, err
+		return []*TradeThailand{}, err
 	}
 	return res, nil
 }
@@ -169,6 +169,21 @@ type TradeV3 struct {
 	IsMaker         bool   `json:"isMaker"`
 	IsBestMatch     bool   `json:"isBestMatch"`
 	IsIsolated      bool   `json:"isIsolated"`
+}
+
+type TradeThailand struct {
+	Symbol          string `json:"symbol"`
+	ID              int    `json:"id"`
+	OrderID         int    `json:"orderId"`
+	Price           string `json:"price"`
+	Qty             string `json:"qty"`
+	QuoteQty        string `json:"quoteQty"`
+	Commission      string `json:"commission"`
+	CommissionAsset string `json:"commissionAsset"`
+	Time            int64  `json:"time"`
+	IsBuyer         bool   `json:"isBuyer"`
+	IsMaker         bool   `json:"isMaker"`
+	IsBestMatch     bool   `json:"isBestMatch"`
 }
 
 // AggTradesService list aggregate trades
