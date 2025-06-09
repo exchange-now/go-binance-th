@@ -21,8 +21,8 @@ var (
 	BaseWsMainURL    = "wss://stream.binance.com:9443/ws"
 	BaseWsTestnetURL = "wss://stream.testnet.binance.vision/ws"
 
-	SymbolTypeGlobalWsMainURL = "wss://www.binance.th/stream"
-	SymbolTypeSiteWsMainURL   = "wss://stream-th.2meta.app/stream"
+	SymbolTypeGlobalWsMainURL = "wss://www.binance.th/stream?streams="
+	SymbolTypeSiteWsMainURL   = "wss://stream-th.2meta.app/stream?streams="
 
 	BaseCombinedMainURL    = "wss://stream.binance.com:9443/stream?streams="
 	BaseCombinedTestnetURL = "wss://stream.testnet.binance.vision/stream?streams="
@@ -514,6 +514,42 @@ type WsUserDataEvent struct {
 	OCOUpdate     WsOCOUpdate
 }
 
+type WsCombinedUserDataEvent struct {
+	Stream        string              `json:"stream"`
+	Event         UserDataEventType   `json:"e"`
+	Time          int64               `json:"E"`
+	AccountUpdate WsAccountUpdateList // e: "outboundAccountPosition"
+	BalanceUpdate WsBalanceUpdate     // e: "balanceUpdate"
+	OrderUpdate   WsOrderUpdate       // e: "executionReport"
+	OCOUpdate     WsOCOUpdate         // e: "listStatus"
+}
+
+type WsCombinedAccountUpdateList struct {
+	Stream string `json:"stream"`
+	Data   struct {
+		Event UserDataEventType `json:"e"`
+		Time  int64             `json:"E"`
+		WsAccountUpdateList
+	} `json:"data"`
+}
+
+type WsCombinedBalanceUpdate struct {
+	// TODO:...
+}
+
+type WsCombinedOrderUpdate struct {
+	Stream string `json:"stream"`
+	Data   struct {
+		Event UserDataEventType `json:"e"`
+		Time  int64             `json:"E"`
+		WsOrderUpdate
+	} `json:"data"`
+}
+
+type WsCombinedOCOUpdate struct {
+	// TODO:...
+}
+
 type WsAccountUpdateList struct {
 	AccountUpdateTime int64             `json:"u"`
 	WsAccountUpdates  []WsAccountUpdate `json:"B"`
@@ -610,15 +646,16 @@ type WsOCOOrder struct {
 
 // WsUserDataHandler handle WsUserDataEvent
 type WsUserDataHandler func(event *WsUserDataEvent)
+type WsCombinedUserDataHandler func(event *WsCombinedUserDataEvent)
 
 // WsUserDataServe serve user data handler with listen key
 // https://www.binance.th/api-docs/en/?go#cloud-rest-open-api-user-data-streams
-func WsUserDataServe(symbolType BinancethSymbolType, listenKey string, handler WsUserDataHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
+func WsUserDataServe(symbolType BinancethSymbolType, listenKey string, handler WsCombinedUserDataHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
 	var endpoint string
 	if symbolType == SymbolTypeSite {
-		endpoint = fmt.Sprintf("%s?streams=%s", SymbolTypeSiteWsMainURL, listenKey)
+		endpoint = fmt.Sprintf("%s%s", SymbolTypeSiteWsMainURL, listenKey)
 	} else if symbolType == SymbolTypeGlobal {
-		endpoint = fmt.Sprintf("%s?streams=%s", SymbolTypeGlobalWsMainURL, listenKey)
+		endpoint = fmt.Sprintf("%s%s", SymbolTypeGlobalWsMainURL, listenKey)
 	} else {
 		return nil, nil, fmt.Errorf("unknown symbol type: %s", symbolType)
 	}
@@ -629,40 +666,47 @@ func WsUserDataServe(symbolType BinancethSymbolType, listenKey string, handler W
 			errHandler(err)
 			return
 		}
+		stream := j.Get("stream").MustString()
+		eventType := j.Get("data").Get("e").MustString()
 
-		event := new(WsUserDataEvent)
+		event := new(WsCombinedUserDataEvent)
+		event.Stream = stream
 
-		err = json.Unmarshal(message, event)
-		if err != nil {
-			errHandler(err)
-			return
-		}
-
-		switch UserDataEventType(j.Get("e").MustString()) {
+		switch UserDataEventType(eventType) {
 		case UserDataEventTypeOutboundAccountPosition:
-			err = json.Unmarshal(message, &event.AccountUpdate)
+			var resp WsCombinedAccountUpdateList
+			err = json.Unmarshal(message, &resp)
 			if err != nil {
 				errHandler(err)
 				return
 			}
+			event.Event = resp.Data.Event
+			event.Time = resp.Data.Time
+			event.AccountUpdate = resp.Data.WsAccountUpdateList
 		case UserDataEventTypeBalanceUpdate:
-			err = json.Unmarshal(message, &event.BalanceUpdate)
-			if err != nil {
-				errHandler(err)
-				return
-			}
+			// TODO: implement this
+			//err = json.Unmarshal(message, &event.BalanceUpdate)
+			//if err != nil {
+			//	errHandler(err)
+			//	return
+			//}
 		case UserDataEventTypeExecutionReport:
-			err = json.Unmarshal(message, &event.OrderUpdate)
+			var resp WsCombinedOrderUpdate
+			err = json.Unmarshal(message, &resp)
 			if err != nil {
 				errHandler(err)
 				return
 			}
+			event.Event = resp.Data.Event
+			event.Time = resp.Data.Time
+			event.OrderUpdate = resp.Data.WsOrderUpdate
 		case UserDataEventTypeListStatus:
-			err = json.Unmarshal(message, &event.OCOUpdate)
-			if err != nil {
-				errHandler(err)
-				return
-			}
+			// TODO: implement this
+			//err = json.Unmarshal(message, &event.OCOUpdate)
+			//if err != nil {
+			//	errHandler(err)
+			//	return
+			//}
 		}
 
 		handler(event)
