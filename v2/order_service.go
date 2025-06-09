@@ -764,7 +764,7 @@ func (s *CancelOpenOrdersService) Symbol(symbol string) *CancelOpenOrdersService
 }
 
 // Do send request
-func (s *CancelOpenOrdersService) Do(ctx context.Context, opts ...RequestOption) (res *CancelOpenOrdersResponse, err error) {
+func (s *CancelOpenOrdersService) Do(ctx context.Context, opts ...RequestOption) (err error) {
 	r := &request{
 		method:   http.MethodDelete,
 		endpoint: "/api/v1/openOrders",
@@ -773,9 +773,13 @@ func (s *CancelOpenOrdersService) Do(ctx context.Context, opts ...RequestOption)
 	r.setParam("symbol", s.symbol)
 	data, err := s.c.callAPI(ctx, r, opts...)
 	if err != nil {
-		return &CancelOpenOrdersResponse{}, err
+		//return &CancelOpenOrdersResponse{}, err
+		return err
 	}
-	fmt.Println("CancelOpenOrdersService response:", string(data))
+	if false {
+		fmt.Println("CancelOpenOrdersService response:", string(data)) // {"code": 200,"msg": "The operation of cancel all open order is done."}
+	}
+
 	//rawMessages := make([]*json.RawMessage, 0)
 	//err = json.Unmarshal(data, &rawMessages)
 	//if err != nil {
@@ -799,7 +803,7 @@ func (s *CancelOpenOrdersService) Do(ctx context.Context, opts ...RequestOption)
 	//	cancelOpenOrdersResponse.OCOOrders = append(cancelOpenOrdersResponse.OCOOrders, oco)
 	//}
 	//return cancelOpenOrdersResponse, nil
-	return &CancelOpenOrdersResponse{}, nil
+	return nil
 }
 
 // CancelOpenOrdersResponse defines cancel open orders response.
