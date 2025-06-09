@@ -2,6 +2,8 @@ package binance
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -11,22 +13,43 @@ type StartUserStreamService struct {
 }
 
 // Do send request
-func (s *StartUserStreamService) Do(ctx context.Context, opts ...RequestOption) (listenKey string, err error) {
+func (s *StartUserStreamService) Do(ctx context.Context, opts ...RequestOption) (siteListenKey, globalListenKey string, err error) {
 	r := &request{
 		method:   http.MethodPost,
-		endpoint: "/api/v3/userDataStream",
+		endpoint: "/api/v1/listenKey",
 		secType:  secTypeAPIKey,
 	}
 	data, err := s.c.callAPI(ctx, r, opts...)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
-	j, err := newJSON(data)
+
+	//j, err := newJSON(data)
+	//if err != nil {
+	//	return "", "", err
+	//}
+	//listenKey = j.Get("listenKey").MustString()
+	//return listenKey, nil
+	type ResponseStruct []struct {
+		ListenKey string `json:"listenKey"`
+		Type      string `json:"type"`
+	}
+	var resp ResponseStruct
+	err = json.Unmarshal(data, &resp)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
-	listenKey = j.Get("listenKey").MustString()
-	return listenKey, nil
+	var siteKey, globalKey string
+	for _, item := range resp {
+		if item.Type == "SITE" {
+			siteKey = item.ListenKey
+		} else if item.Type == "GLOBAL" {
+			globalKey = item.ListenKey
+		} else {
+			return "", "", fmt.Errorf("unknown listen key type: %s", item.Type)
+		}
+	}
+	return siteKey, globalKey, nil
 }
 
 // KeepaliveUserStreamService update listen key
