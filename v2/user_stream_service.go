@@ -69,7 +69,7 @@ func (s *KeepaliveUserStreamService) ListenKey(listenKey string) *KeepaliveUserS
 func (s *KeepaliveUserStreamService) Do(ctx context.Context, opts ...RequestOption) (err error) {
 	r := &request{
 		method:   http.MethodPut,
-		endpoint: "/api/v3/userDataStream",
+		endpoint: "/api/v1/listenKey",
 		secType:  secTypeAPIKey,
 	}
 	r.setFormParam("listenKey", s.listenKey)
