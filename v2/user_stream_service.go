@@ -66,6 +66,7 @@ func (s *KeepaliveUserStreamService) ListenKey(listenKey string) *KeepaliveUserS
 }
 
 // Do send request
+// https://www.binance.th/api-docs/en/?go#ping-keep-alive-a-listenkey-user_stream
 func (s *KeepaliveUserStreamService) Do(ctx context.Context, opts ...RequestOption) (err error) {
 	r := &request{
 		method:   http.MethodPut,
