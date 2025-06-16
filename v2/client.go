@@ -191,7 +191,7 @@ const (
 	UserDataEventTypeOutboundAccountPosition UserDataEventType = "outboundAccountPosition"
 	UserDataEventTypeBalanceUpdate           UserDataEventType = "balanceUpdate"
 	UserDataEventTypeExecutionReport         UserDataEventType = "executionReport"
-	UserDataEventTypeListStatus              UserDataEventType = "ListStatus"
+	UserDataEventTypeListStatus              UserDataEventType = "listStatus"
 
 	MarginTransferTypeToMargin MarginTransferType = 1
 	MarginTransferTypeToMain   MarginTransferType = 2

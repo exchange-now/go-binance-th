@@ -534,7 +534,12 @@ type WsCombinedAccountUpdateList struct {
 }
 
 type WsCombinedBalanceUpdate struct {
-	// TODO:...
+	Stream string `json:"stream"`
+	Data   struct {
+		Event UserDataEventType `json:"e"`
+		Time  int64             `json:"E"`
+		WsBalanceUpdate
+	}
 }
 
 type WsCombinedOrderUpdate struct {
@@ -547,7 +552,12 @@ type WsCombinedOrderUpdate struct {
 }
 
 type WsCombinedOCOUpdate struct {
-	// TODO:...
+	Stream string `json:"stream"`
+	Data   struct {
+		Event UserDataEventType `json:"e"`
+		Time  int64             `json:"E"`
+		WsOCOUpdate
+	}
 }
 
 type WsAccountUpdateList struct {
@@ -673,7 +683,7 @@ func WsUserDataServe(symbolType BinancethSymbolType, listenKey string, handler W
 		event.Stream = stream
 
 		switch UserDataEventType(eventType) {
-		case UserDataEventTypeOutboundAccountPosition:
+		case UserDataEventTypeOutboundAccountPosition: // outboundAccountPosition
 			var resp WsCombinedAccountUpdateList
 			err = json.Unmarshal(message, &resp)
 			if err != nil {
@@ -683,14 +693,17 @@ func WsUserDataServe(symbolType BinancethSymbolType, listenKey string, handler W
 			event.Event = resp.Data.Event
 			event.Time = resp.Data.Time
 			event.AccountUpdate = resp.Data.WsAccountUpdateList
-		case UserDataEventTypeBalanceUpdate:
-			// TODO: implement this
-			//err = json.Unmarshal(message, &event.BalanceUpdate)
-			//if err != nil {
-			//	errHandler(err)
-			//	return
-			//}
-		case UserDataEventTypeExecutionReport:
+		case UserDataEventTypeBalanceUpdate: // balanceUpdate
+			var resp WsCombinedBalanceUpdate
+			err = json.Unmarshal(message, &resp)
+			if err != nil {
+				errHandler(err)
+				return
+			}
+			event.Event = resp.Data.Event
+			event.Time = resp.Data.Time
+			event.BalanceUpdate = resp.Data.WsBalanceUpdate
+		case UserDataEventTypeExecutionReport: // executionReport
 			var resp WsCombinedOrderUpdate
 			err = json.Unmarshal(message, &resp)
 			if err != nil {
@@ -700,13 +713,16 @@ func WsUserDataServe(symbolType BinancethSymbolType, listenKey string, handler W
 			event.Event = resp.Data.Event
 			event.Time = resp.Data.Time
 			event.OrderUpdate = resp.Data.WsOrderUpdate
-		case UserDataEventTypeListStatus:
-			// TODO: implement this
-			//err = json.Unmarshal(message, &event.OCOUpdate)
-			//if err != nil {
-			//	errHandler(err)
-			//	return
-			//}
+		case UserDataEventTypeListStatus: // listStatus
+			var resp WsCombinedOCOUpdate
+			err = json.Unmarshal(message, &resp)
+			if err != nil {
+				errHandler(err)
+				return
+			}
+			event.Event = resp.Data.Event
+			event.Time = resp.Data.Time
+			event.OCOUpdate = resp.Data.WsOCOUpdate
 		}
 
 		handler(event)
