@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/adshao/go-binance/v2/common"
+	"github.com/exchange-now/go-binance-th/common"
 )
 
 // WsApiMethodType define method name for websocket API

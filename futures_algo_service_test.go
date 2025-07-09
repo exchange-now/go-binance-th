@@ -3,7 +3,7 @@ package binance
 import (
 	"testing"
 
-	"github.com/adshao/go-binance/v2/futures"
+	"github.com/exchange-now/go-binance-th/futures"
 	"github.com/stretchr/testify/suite"
 )
 

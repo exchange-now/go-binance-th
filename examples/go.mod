@@ -4,11 +4,7 @@ go 1.23.4
 
 // require  v2.8.0
 
-replace github.com/adshao/go-binance/v2 => ../v2
-
-replace github.com/adshao/go-binance/v2/futures => ../v2/futures
-
-require github.com/adshao/go-binance/v2 v2.0.0-00010101000000-000000000000
+require github.com/exchange-now/go-binance-th v0.0.0-20250709051546-d86989382cba
 
 require (
 	github.com/bitly/go-simplejson v0.5.0 // indirect

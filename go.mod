@@ -1,4 +1,4 @@
-module github.com/adshao/go-binance/v2
+module github.com/exchange-now/go-binance-th
 
 go 1.18
 

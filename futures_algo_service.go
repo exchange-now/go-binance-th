@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/adshao/go-binance/v2/futures"
+	"github.com/exchange-now/go-binance-th/futures"
 )
 
 // CreateFuturesAlgoTwapOrderService create future algo order

@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/adshao/go-binance/v2/common"
-	"github.com/adshao/go-binance/v2/common/websocket"
+	"github.com/exchange-now/go-binance-th/common"
+	"github.com/exchange-now/go-binance-th/common/websocket"
 )
 
 // NewOrderCancelRequest init OrderCancelRequest

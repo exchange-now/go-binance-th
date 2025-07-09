@@ -8,7 +8,7 @@ import (
 	reflect "reflect"
 	time "time"
 
-	websocket "github.com/adshao/go-binance/v2/common/websocket"
+	websocket "github.com/exchange-now/go-binance-th/common/websocket"
 	gomock "github.com/golang/mock/gomock"
 )
 

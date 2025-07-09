@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/adshao/go-binance/v2/common/websocket"
-	"github.com/adshao/go-binance/v2/common/websocket/mock"
+	"github.com/exchange-now/go-binance-th/common/websocket"
+	"github.com/exchange-now/go-binance-th/common/websocket/mock"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 )

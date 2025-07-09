@@ -1,6 +1,6 @@
 package portfolio
 
-import "github.com/adshao/go-binance/v2/common"
+import "github.com/exchange-now/go-binance-th/common"
 
 // Error represents a portfolio error extending the common APIError
 type Error struct {
