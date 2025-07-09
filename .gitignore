@@ -1,5 +1,6 @@
 pkg/
 .idea
+.vscode
 *.iml
 coverage.txt
 **/.DS_Store
