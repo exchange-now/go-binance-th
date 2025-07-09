@@ -7,7 +7,7 @@
 ** @Last modified by:
 *******************************************************************************/
 
-package binance
+package binanceth
 
 import (
 	"context"

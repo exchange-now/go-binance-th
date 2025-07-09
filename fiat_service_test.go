@@ -1,4 +1,4 @@
-package binance
+package binanceth
 
 import (
 	"github.com/stretchr/testify/suite"
