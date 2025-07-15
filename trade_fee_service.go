@@ -22,7 +22,7 @@ func (s *TradeFeeService) Symbol(symbol string) *TradeFeeService {
 func (s *TradeFeeService) Do(ctx context.Context) (res []*TradeFeeDetails, err error) {
 	r := &request{
 		method:   http.MethodGet,
-		endpoint: "/sapi/v1/asset/tradeFee",
+		endpoint: "/api/v1/asset/tradeFee",
 		secType:  secTypeSigned,
 	}
 
