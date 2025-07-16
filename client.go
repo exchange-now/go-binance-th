@@ -150,6 +150,14 @@ const (
 	OrderTypeTakeProfit      OrderType = "TAKE_PROFIT"
 	OrderTypeTakeProfitLimit OrderType = "TAKE_PROFIT_LIMIT"
 
+	// GTC（Good Till Cancel，成交为止）：订单在完全成交或被手动取消前一直有效。需要注意的是，GTC订单的有效期最长为一年，超过一年的订单将被自动取消。
+	// IOC（Immediate or Cancel，立即成交或取消）：订单会立即尝试全部或部分成交，未成交部分将被立即取消。
+	// FOK（Fill or Kill，全部成交或取消）：订单必须立即全部成交，否则将被完全取消。
+	// GTX（Good Till Crossing）：如果订单无法成为挂单方（maker），则会被取消。
+	// GTD（Good Till Date）：订单在指定的日期和时间之前有效，若在此时间前未成交，将被自动取消。
+	//
+	// 币安现货不支持 timeInForce:GTX，如果想提交 Post‑Only（maker only） 限价单，请使用 type=LIMIT_MAKER。Futures（合约）订单，设置 timeInForce=GTX，这才会生成 Post‑Only 限价单 。
+
 	TimeInForceTypeGTC TimeInForceType = "GTC"
 	TimeInForceTypeIOC TimeInForceType = "IOC"
 	TimeInForceTypeFOK TimeInForceType = "FOK"
