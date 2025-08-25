@@ -106,7 +106,7 @@ func (s *ListDepositsService) Do(ctx context.Context, opts ...RequestOption) (re
 
 // Deposit represents a single deposit entry.
 type Deposit struct {
-	ID            string `json:"id"`
+	ID            int64  `json:"id"` // 文档是string，但是实际接收的是int
 	Amount        string `json:"amount"`
 	Coin          string `json:"coin"`
 	Network       string `json:"network"`
