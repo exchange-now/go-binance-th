@@ -120,8 +120,7 @@ type Deposit struct {
 }
 
 // GetDepositsAddressService retrieves the details of a deposit address.
-//
-// See https://binance-docs.github.io/apidocs/spot/en/#deposit-address-supporting-network-user_data
+// See https://www.binance.th/api-docs/en/?go#user-deposit-address
 type GetDepositsAddressService struct {
 	c       *Client
 	coin    string
@@ -144,7 +143,7 @@ func (s *GetDepositsAddressService) Network(network string) *GetDepositsAddressS
 func (s *GetDepositsAddressService) Do(ctx context.Context, opts ...RequestOption) (*GetDepositAddressResponse, error) {
 	r := &request{
 		method:   http.MethodGet,
-		endpoint: "/sapi/v1/capital/deposit/address",
+		endpoint: "/api/v1/capital/deposit/address",
 		secType:  secTypeSigned,
 	}
 	r.setParam("coin", s.coin)
