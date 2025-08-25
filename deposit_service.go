@@ -8,7 +8,7 @@ import (
 
 // ListDepositsService fetches deposit history.
 //
-// See https://binance-docs.github.io/apidocs/spot/en/#deposit-history-user_data
+// See https://www.binance.th/api-docs/en/?go#user-deposit-history
 type ListDepositsService struct {
 	c         *Client
 	coin      *string
@@ -67,7 +67,7 @@ func (s *ListDepositsService) TxID(id string) *ListDepositsService {
 func (s *ListDepositsService) Do(ctx context.Context, opts ...RequestOption) (res []*Deposit, err error) {
 	r := &request{
 		method:   http.MethodGet,
-		endpoint: "/sapi/v1/capital/deposit/hisrec",
+		endpoint: "/api/v1/capital/deposit/history",
 		secType:  secTypeSigned,
 	}
 	if s.coin != nil {
