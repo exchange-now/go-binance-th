@@ -106,6 +106,7 @@ func (s *ListDepositsService) Do(ctx context.Context, opts ...RequestOption) (re
 
 // Deposit represents a single deposit entry.
 type Deposit struct {
+	ID            string `json:"id"`
 	Amount        string `json:"amount"`
 	Coin          string `json:"coin"`
 	Network       string `json:"network"`
