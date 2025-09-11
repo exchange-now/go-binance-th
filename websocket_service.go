@@ -16,6 +16,10 @@ const (
 	SymbolTypeSite   BinancethSymbolType = "SITE"
 )
 
+func (s BinancethSymbolType) IsValid() bool {
+	return s == SymbolTypeGlobal || s == SymbolTypeSite
+}
+
 var (
 	// Endpoints
 	BaseWsMainURL    = "wss://stream.binance.com:9443/ws"

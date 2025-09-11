@@ -670,6 +670,11 @@ func (c *Client) NewListSymbolTickerService() *ListSymbolTickerService {
 	return &ListSymbolTickerService{c: c}
 }
 
+// NewSymbolTypeService init symbol type check service
+func (c *Client) NewSymbolTypeService() *SymbolTypeService {
+	return &SymbolTypeService{c: c}
+}
+
 // NewCreateOrderService init creating order service
 func (c *Client) NewCreateOrderService() *CreateOrderService {
 	return &CreateOrderService{c: c}
