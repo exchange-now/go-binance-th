@@ -124,13 +124,12 @@ type CreateWithdrawResponse struct {
 
 // ListWithdrawsService fetches withdraw history.
 //
-// See https://developers.binance.com/docs/wallet/capital/withdraw-history
+// See https://www.binance.th/api-docs/en/?go#user-deposit-history
 //   - network may not be in the response for old withdraw.
 //   - Please notice the default startTime and endTime to make sure that time interval is within 0-90 days.
 //   - If both startTime and endTimeare sent, time between startTimeand endTimemust be less than 90 days.
 //   - If withdrawOrderId is sent, time between startTime and endTime must be less than 7 days.
 //   - If withdrawOrderId is sent, startTime and endTime are not sent, will return last 7 days records by default.
-//   - Maximum support idList number is 45.
 type ListWithdrawsService struct {
 	c               *Client
 	coin            *string
@@ -139,8 +138,7 @@ type ListWithdrawsService struct {
 	startTime       *int64 // Default: 90 days from current timestamp
 	endTime         *int64 // Default: present timestamp
 	offset          *int
-	limit           *int    // Default: 1000, Max: 1000
-	idList          *string // id list returned in the response of POST /sapi/v1/capital/withdraw/apply, separated by ,
+	limit           *int // Default: 1000, Max: 1000
 }
 
 // Coin sets the coin parameter.
@@ -187,17 +185,11 @@ func (s *ListWithdrawsService) Limit(limit int) *ListWithdrawsService {
 	return s
 }
 
-// IdList id list returned in the response of POST /sapi/v1/capital/withdraw/apply, separated by ,
-func (s *ListWithdrawsService) IdList(ids string) *ListWithdrawsService {
-	s.idList = &ids
-	return s
-}
-
 // Do sends the request.
 func (s *ListWithdrawsService) Do(ctx context.Context, opts ...RequestOption) (res []*Withdraw, err error) {
 	r := &request{
 		method:   http.MethodGet,
-		endpoint: "/sapi/v1/capital/withdraw/history",
+		endpoint: "/api/v1/capital/withdraw/history",
 		secType:  secTypeSigned,
 	}
 	if s.coin != nil {
@@ -220,9 +212,6 @@ func (s *ListWithdrawsService) Do(ctx context.Context, opts ...RequestOption) (r
 	}
 	if s.limit != nil {
 		r.setParam("limit", *s.limit)
-	}
-	if s.idList != nil {
-		r.setParam("idList", *s.idList)
 	}
 	data, err := s.c.callAPI(ctx, r, opts...)
 	if err != nil {
